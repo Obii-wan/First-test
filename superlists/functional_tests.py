@@ -1,3 +1,5 @@
+from time import sleep
+
 from selenium import webdriver
 
 import unittest
@@ -36,6 +38,7 @@ class NewVisitorTest(unittest.TestCase):
         # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
 
+        sleep(1)
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
@@ -48,7 +51,7 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
 
         # The page updates again and now shows both items on her list
-
+        sleep(1)
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
