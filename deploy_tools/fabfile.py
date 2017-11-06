@@ -30,7 +30,7 @@ def _get_latest_source(source_folder):
         run('git clone {git_repo} {source_folder}'.format(git_repo=REPO_URL, source_folder=source_folder))
     current_commit = local('cd {source_folder} && git log -n 1 --format=%H'.format(source_folder=source_folder), capture=False)
     run('cd {source_folder} && git reset --hard {current_commit}'.format(source_folder=source_folder, current_commit=current_commit))
-    run('mv {source_folder}/superlists/ {source_folder}/'.format(source_folder=source_folder))
+    run('cd {source_folder}/../ && mv superlists/ source').format(source_folder=source_folder)
 
 
 def _update_settings(source_folder, site_name):
@@ -53,7 +53,7 @@ def _update_virtualenv(source_folder):
     if not exists(virtualenv_folder + '/bin/pip3'):
         run('virtualenv --python=python3 {virtualenv_folder}'.format(virtualenv_folder=virtualenv_folder))
 
-    run('{virtualenv_folder}/bin/pip3 install -r {source_folder}/superlists/requirements.txt'.format(virtualenv_folder=virtualenv_folder, source_folder=source_folder))
+    run('{virtualenv_folder}/bin/pip3 install -r {source_folder}/requirements.txt'.format(virtualenv_folder=virtualenv_folder, source_folder=source_folder))
 
 
 def _update_static_files(source_folder):
