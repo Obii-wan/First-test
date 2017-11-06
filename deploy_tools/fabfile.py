@@ -8,7 +8,7 @@ REPO_URL = 'https://github.com/Obii-wan/First-test.git'
 
 
 def deploy():
-    site_folder = '/home/%s/sites/%s' % (env.user, env.host)
+    site_folder = '/home/{user}/sites/{host}'.format(user=env.user, host=env.host)
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
@@ -20,28 +20,28 @@ def deploy():
 
 def _create_directory_structure_if_necessary(site_folder):
     for sub_folder in ('database', 'virtualenv', 'static', 'source'):
-        run('mkdir -p %s/%s' % (site_folder, sub_folder))
+        run('mkdir -p {site_folder}/{sub_folder}'.format(site_folder=site_folder, sub_folder=sub_folder))
 
 
 def _get_latest_source(source_folder):
     if exists(source_folder + '/.git'):
-        run('cd %s && git fetch' % (source_folder,))
+        run('cd {source_folder} && git fetch'.format(source_folder=source_folder))
     else:
-        run('git clone %s %s' % (REPO_URL, source_folder))
-    current_commit = local('cd /home/ubuntu/sites/dojavi.me/source && git log -n 1 --format=%H', capture=False)
-    run('cd %s && git reset --hard %s' % (source_folder, current_commit))
+        run('git clone {git_repo} {source_folder}'.format(git_repo=REPO_URL, source_folder=source_folder))
+    current_commit = local('cd {source_folder} && git log -n 1 --format=%H'.format(source_folder=source_folder), capture=False)
+    run('cd {source_folder} && git reset --hard {current_commit}'.format(source_folder=source_folder, current_commit=current_commit))
 
 
 def _update_settings(source_folder, site_name):
     settings_path = source_folder + '/superlists/superlists/settings.py'
     sed(settings_path, 'DEBUG = True', 'DEBUG = False')
-    sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = ["%s"]' % site_name)
+    sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = ["{site_name}"]'.format(site_name=site_name))
     secret_key_file = source_folder + '/superlists/superlists/secret_key.py'
 
     if not exists(secret_key_file):
         chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
         key = ''.join(random.SystemRandom().choice(chars) for _ in range(50))
-        append(secret_key_file, "SECRET_KEY = '%s'" % key)
+        append(secret_key_file, "SECRET_KEY = '{secret_key}'".format(secret_key=key))
 
     append(settings_path, '\nfrom .secret_key import SECRET_KEY')
 
@@ -50,14 +50,14 @@ def _update_virtualenv(source_folder):
     virtualenv_folder = source_folder + '/../virtualenv'
 
     if not exists(virtualenv_folder + '/bin/pip3'):
-        run('virtualenv --python=python3 %s' % virtualenv_folder)
+        run('virtualenv --python=python3 {virtualenv_folder}'.format(virtualenv_folder=virtualenv_folder))
 
-    run('%s/bin/pip3 install -r %s/superlists/requirements.txt' % (virtualenv_folder, source_folder))
+    run('{virtualenv_folder}/bin/pip3 install -r {source_folder}/superlists/requirements.txt'.format(virtualenv_folder=virtualenv_folder, source_folder=source_folder))
 
 
 def _update_static_files(source_folder):
-    run('cd %s && ../virtualenv/bin/python3 manage.py collecstatic --noinput' % source_folder)
+    run('cd {source_folder} && ../virtualenv/bin/python3 manage.py collecstatic --noinput'.format(source_folder=source_folder))
 
 
 def _update_database(source_folder):
-    run("cd %s && ../virtualenv/bin/python3 manage.py migrate --noinput" % source_folder)
+    run("cd {source_folder} && ../virtualenv/bin/python3 manage.py migrate --noinput".format(source_folder=source_folder))
