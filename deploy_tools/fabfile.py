@@ -4,6 +4,9 @@ import random
 
 REPO_URL = 'https://github.com/Obii-wan/First-test.git'
 
+env.warn_only = True
+
+
 def deploy():
     site_folder = '/home/{user}/sites/{host}'.format(user=env.user, host=env.host)
     source_folder = site_folder + '/source'
@@ -27,7 +30,7 @@ def _get_latest_source(source_folder):
         run('git clone {git_repo} {source_folder}'.format(git_repo=REPO_URL, source_folder=source_folder))
     current_commit = local('cd {source_folder} && git log -n 1 --format=%H'.format(source_folder=source_folder), capture=False)
     run('cd {source_folder} && git reset --hard {current_commit}'.format(source_folder=source_folder, current_commit=current_commit))
-    run('mv {source_folder}/superlists {source_folder}/'.format(source_folder=source_folder))
+    run('mv {source_folder}/superlists/ {source_folder}/'.format(source_folder=source_folder))
 
 
 def _update_settings(source_folder, site_name):
@@ -54,7 +57,7 @@ def _update_virtualenv(source_folder):
 
 
 def _update_static_files(source_folder):
-    run('cd {source_folder} && ../virtualenv/bin/python3 manage.py collecstatic --noinput'.format(source_folder=source_folder))
+    run('cd {source_folder} && ../virtualenv/bin/python3 manage.py collectstatic --noinput'.format(source_folder=source_folder))
 
 
 def _update_database(source_folder):
