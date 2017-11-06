@@ -4,6 +4,8 @@ import random
 
 REPO_URL = 'https://github.com/Obii-wan/First-test.git'
 
+#env.use_ssh_config = True
+
 
 def deploy():
     site_folder = '/home/%s/sites/%s' % (env.user, env.host)
@@ -26,15 +28,15 @@ def _get_latest_source(source_folder):
         run('cd %s && git fetch' % (source_folder,))
     else:
         run('git clone %s %s' % (REPO_URL, source_folder))
-    current_commit = local('git log -n 1 --format=%H', capture=True)
+    current_commit = local('cd /home/ubuntu/sites/dojavi.me/source && git log -n 1 --format=%H', capture=False)
     run('cd %s && git reset --hard %s' % (source_folder, current_commit))
 
 
 def _update_settings(source_folder, site_name):
-    settings_path = source_folder + '/superlists/settings.py'
+    settings_path = source_folder + '/superlists/superlists/settings.py'
     sed(settings_path, 'DEBUG = True', 'DEBUG = False')
-    sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = [%s]' % site_name)
-    secret_key_file = source_folder + '/superlists/secret_key.py'
+    sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = ["%s"]' % site_name)
+    secret_key_file = source_folder + '/superlists/superlists/secret_key.py'
 
     if not exists(secret_key_file):
         chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
@@ -50,7 +52,7 @@ def _update_virtualenv(source_folder):
     if not exists(virtualenv_folder + '/bin/pip3'):
         run('virtualenv --python=python3 %s' % virtualenv_folder)
 
-    run('%s/bin/pip3 install -r %s/requirements.txt' % (virtualenv_folder, source_folder))
+    run('%s/bin/pip3 install -r %s/superlists/requirements.txt' % (virtualenv_folder, source_folder))
 
 
 def _update_static_files(source_folder):
