@@ -12,7 +12,7 @@ def deploy():
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
-    _update_settings(source_folder, env.host)
+    _update_settings(source_folder + '/superlists', env.host)
     _update_virtualenv(source_folder)
     _update_static_files(source_folder)
     _update_database(source_folder)
@@ -30,7 +30,6 @@ def _get_latest_source(source_folder):
         run('git clone {git_repo} {source_folder}'.format(git_repo=REPO_URL, source_folder=source_folder))
     current_commit = local('cd {source_folder} && git log -n 1 --format=%H'.format(source_folder=source_folder), capture=False)
     run('cd {source_folder} && git reset --hard {current_commit}'.format(source_folder=source_folder, current_commit=current_commit))
-    run('cd {source_folder}/../ && mv superlists/ source').format(source_folder=source_folder)
 
 
 def _update_settings(source_folder, site_name):
