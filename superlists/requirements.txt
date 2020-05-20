@@ -20,7 +20,7 @@ fixerio==0.1.1
 fixtures==3.0.0
 gunicorn==19.7.1
 html5lib==0.999999999
-httplib2==0.10.3
+httplib2==0.18.0
 idna==2.5
 iso8601==0.1.12
 isodate==0.5.4
