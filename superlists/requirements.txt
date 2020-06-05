@@ -13,7 +13,7 @@ cssselect==1.0.1
 cssselect2==0.2.0
 debtcollector==1.17.0
 defusedxml==0.5.0
-Django==1.11.4
+Django==1.11.29
 django-qrcode==0.3
 extras==1.0.0
 fixerio==0.1.1
