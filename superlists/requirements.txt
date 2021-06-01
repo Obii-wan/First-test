@@ -82,7 +82,7 @@ tinycss==0.4
 tinycss2==0.6.0
 traceback2==1.4.0
 unittest2==1.1.0
-urllib3==1.22
+urllib3==1.26.5
 virtualenv==15.1.0
 webencodings==0.5.1
 wrapt==1.10.10
